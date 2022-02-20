@@ -24,7 +24,7 @@ def cmd(url, password, discord_secret, discord_channel_id, name):
 
     driver.implicitly_wait(30)
    
-    join_space()
+    join_space(driver)
     
     # 部屋に入った時の状態確認用にキャプチャを取得する
     driver.save_screenshot('screenshot.png')
@@ -89,7 +89,7 @@ def setup_driver():
     driver = webdriver.Chrome(options=options)
     return driver
 
-def join_space():
+def join_space(driver):
     # パスワード入力
     driver.find_element(By.CSS_SELECTOR, 'input[type="password"]').send_keys(password)
     driver.find_element(By.XPATH, '//button[text()="Submit"]').click()
