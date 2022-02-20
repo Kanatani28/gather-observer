@@ -24,7 +24,26 @@ def cmd(url, password, discord_secret, discord_channel_id, name):
 
     driver.implicitly_wait(30)
    
-    join_space(driver)
+    # パスワード入力
+    driver.find_element(By.CSS_SELECTOR, 'input[type="password"]').send_keys(password)
+    driver.find_element(By.XPATH, '//button[text()="Submit"]').click()
+
+    # キャラメイク
+    driver.find_element(By.XPATH, '//button[text()="Next Step"]').click()
+
+    # 名前入力
+    driver.find_element(By.CSS_SELECTOR, 'input[placeholder="Enter your name"]').send_keys(name)
+    driver.find_element(By.XPATH, '//button[text()="Finish"]').click()
+
+    # Join
+    driver.find_element(By.XPATH, '//button[text()="Join the Gathering"]').click()
+
+    try:
+        # チュートリアル画面に飛ばされることがあるのでその時はスキップ
+        driver.find_element(By.XPATH, '//button[text()="Skip Tutorial"]').click()
+        print('tutorial skipped')
+    except:
+        print('no tutorial')
     
     # 部屋に入った時の状態確認用にキャプチャを取得する
     driver.save_screenshot('screenshot.png')
@@ -87,30 +106,7 @@ def setup_driver():
     options.add_argument(f'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.79 Safari/537.36') 
     # ブラウザーを起動
     driver = webdriver.Chrome(options=options)
-    return driver
-
-def join_space(driver):
-    # パスワード入力
-    driver.find_element(By.CSS_SELECTOR, 'input[type="password"]').send_keys(password)
-    driver.find_element(By.XPATH, '//button[text()="Submit"]').click()
-
-    # キャラメイク
-    driver.find_element(By.XPATH, '//button[text()="Next Step"]').click()
-
-    # 名前入力
-    driver.find_element(By.CSS_SELECTOR, 'input[placeholder="Enter your name"]').send_keys(name)
-    driver.find_element(By.XPATH, '//button[text()="Finish"]').click()
-
-    # Join
-    driver.find_element(By.XPATH, '//button[text()="Join the Gathering"]').click()
-
-    try:
-        # チュートリアル画面に飛ばされることがあるのでその時はスキップ
-        driver.find_element(By.XPATH, '//button[text()="Skip Tutorial"]').click()
-        print('tutorial skipped')
-    except:
-        print('no tutorial')
-        
+    return driver    
 
 if __name__ == '__main__':
     cmd()
