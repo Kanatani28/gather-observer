@@ -1,4 +1,5 @@
 import requests
+import json
 
 class DiscordClient:
     
@@ -7,7 +8,11 @@ class DiscordClient:
         self.token = token
         pass
     
-    def send_message(self, embeds):
-        headers = {'Authorization': f'Bot {self.token}'}
+    def send_message(self, data):
+        headers = {
+            'Authorization': f'Bot {self.token}',
+            'content-type': 'application/json'
+        }
         url = f'https://discord.com/api/v9/channels/{self.channel_id}/messages'
-        requests.post(url, headers=headers, data={"embeds": embeds})
+        res = requests.post(url, headers=headers, data=json.dumps(data))
+        print(res)

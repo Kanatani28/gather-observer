@@ -72,11 +72,14 @@ def cmd(url, password, discord_secret, discord_channel_id, name):
             print(guests_el.text)
             
             discord_client = DiscordClient(discord_secret, discord_channel_id)
-            message = '〇〇さんが居るみたい！Gatherに入って会いに行こう！'
             embeds = [{
-                "title": message,
-                "color": 0x00ff00,
-                "url": url
+                "title": "Gatherに集まる",
+                "description": "〇〇さんが居るみたい！Gatherに入って会いに行こう！",
+                "color": 65280,
+                "url": url,
+                "image": {
+                    "url": "https://user-images.githubusercontent.com/16130443/154839020-cbe6d843-f957-4013-81d9-7e62b74cadaa.png"
+                }
             }]
             discord_client.send_message(embeds)
     
