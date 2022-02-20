@@ -1,8 +1,7 @@
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-import chromedriver_binary
 import click
+from get_chrome_driver import GetChromeDriver
 
 @click.command()
 @click.argument('url')
@@ -56,7 +55,10 @@ def cmd(url, password, name):
     driver.quit()
 
 def setup_driver():
-    options = Options()
+    get_driver = GetChromeDriver()
+    get_driver.install()
+
+    options = webdriver.ChromeOptions()
     # options.binary_location = '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary'
     # options.add_argument('--headless')
     # ブラウザーを起動
