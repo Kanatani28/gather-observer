@@ -15,4 +15,5 @@ class DiscordClient:
         }
         url = f'https://discord.com/api/v9/channels/{self.channel_id}/messages'
         res = requests.post(url, headers=headers, data=json.dumps(data))
-        print(res)
+        res.raise_for_status()
+        
