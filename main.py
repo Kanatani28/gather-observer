@@ -75,7 +75,7 @@ def cmd(url, password, discord_secret, discord_channel_id, name):
             embeds = [{
                 "title": "Gatherに集まる",
                 "description": "〇〇さんが居るみたい！Gatherに入って会いに行こう！",
-                "color": 65280,
+                "color": 0x00ff00,
                 "url": url,
                 "image": {
                     "url": "https://user-images.githubusercontent.com/16130443/154839020-cbe6d843-f957-4013-81d9-7e62b74cadaa.png"
