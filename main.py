@@ -2,12 +2,14 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import click
 from get_chrome_driver import GetChromeDriver
+from pyvirtualdisplay import Display
 
 @click.command()
 @click.argument('url')
 @click.argument('password')
 @click.option('--name', help='login user name', default='gather observer')
 def cmd(url, password, name):
+    setup_display()
     driver = setup_driver()
     # 画面に遷移
     driver.get(url)
@@ -53,6 +55,10 @@ def cmd(url, password, name):
 
     # ブラウザーを終了
     driver.quit()
+
+def setup_display():
+    display = Display(visible=0, size=(800, 600))
+    display.start()
 
 def setup_driver():
     get_driver = GetChromeDriver()
