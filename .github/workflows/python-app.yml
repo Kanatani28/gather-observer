@@ -20,6 +20,7 @@ jobs:
     - name: Observe gather space
       uses: nick-fields/retry@v2
       with:
+        timeout_seconds: 120
         max_attempts: 3
         retry_on: error
         command: python main.py ${{secrets.GATHER_SPACE_URL}} ${{secrets.GATHER_SPACE_PASSWORD}} ${{secrets.DISCORD_API_SECRET}} ${{secrets.DISCORD_CHANNEL_ID}} --name ${{secrets.OBSERVER_USER_NAME}} 
