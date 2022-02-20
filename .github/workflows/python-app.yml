@@ -18,7 +18,11 @@ jobs:
         pip install get-chrome-driver --upgrade
         pip install -r requirements.txt
     - name: Observe gather space
-      run: python main.py ${{secrets.GATHER_SPACE_URL}} ${{secrets.GATHER_SPACE_PASSWORD}} ${{secrets.DISCORD_API_SECRET}} ${{secrets.DISCORD_CHANNEL_ID}} --name ${{secrets.OBSERVER_USER_NAME}} 
+      uses: nick-fields/retry@v2
+      with:
+        max_attempts: 3
+        retry_on: error
+        command: python main.py ${{secrets.GATHER_SPACE_URL}} ${{secrets.GATHER_SPACE_PASSWORD}} ${{secrets.DISCORD_API_SECRET}} ${{secrets.DISCORD_CHANNEL_ID}} --name ${{secrets.OBSERVER_USER_NAME}} 
     - name: Save failure screenshot
       uses: actions/upload-artifact@v2
       if: failure()
