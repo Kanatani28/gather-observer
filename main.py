@@ -3,8 +3,12 @@ from selenium.webdriver.common.by import By
 import click
 from get_chrome_driver import GetChromeDriver
 from pyvirtualdisplay import Display
+import re
 
 from discord.client import DiscordClient
+
+CONST_MEMBERS = "MEMBERS - "
+CONST_GUESTS = "GUESTS - "
 
 @click.command()
 @click.argument('url')
@@ -48,27 +52,32 @@ def cmd(url, password, discord_secret, discord_channel_id, name):
     # 部屋に入った時の状態確認用にキャプチャを取得する
     driver.save_screenshot('screenshot.png')
 
-    members_text_el = driver.find_element(By.XPATH, '//span[contains(text(),"MEMBERS - ")]')
-    guests_text_el = driver.find_element(By.XPATH, '//span[contains(text(),"GUESTS - ")]')
+    members_text_el = driver.find_element(By.XPATH, f'//span[contains(text(),"{CONST_MEMBERS}")]')
+    guests_text_el = driver.find_element(By.XPATH, f'//span[contains(text(),"{CONST_GUESTS}")]')
     
     print(members_text_el.text)
     print(guests_text_el.text)
     
-    members_count = int(members_text_el.text.split('MEMBERS - ')[-1])
+    members_count = int(members_text_el.text.split(CONST_MEMBERS)[-1])
     # Bot自身がカウントに入ってしまうので -1 する
-    guests_count = int(guests_text_el.text.split('GUESTS - ')[-1]) - 1
+    guests_count = int(guests_text_el.text.split(CONST_GUESTS)[-1]) - 1
 
     match (members_count, guests_count):
         case (1, 0) | (0, 1):
             members_el = members_text_el.find_element_by_xpath('../..')
             guests_el = guests_text_el.find_element_by_xpath('../..')
 
+            notification_user_name = ""
             if members_count == 1:
                 print(members_el)
                 print('------------------')
                 print(members_el.text)
 
+                
                 members = members_el.text.split('\n')
+                # minutesと CONST_MEMBERS 文字列 を削除する
+                filtered = filter(lambda member: (not CONST_MEMBERS in member) and (not re.fullmatch(r'^\d+m$', member)), members)
+                notification_user_name = list(filtered)[-1]
                 print(members)
 
 
@@ -78,12 +87,16 @@ def cmd(url, password, discord_secret, discord_channel_id, name):
                 print(guests_el.text)
 
                 guests = guests_el.text.split('\n')
+                # minutesと CONST_GUESTS 文字列 と このBotのユーザー名 を削除する
+                filtered = filter(lambda guest: (not CONST_GUESTS in guest) and (not re.fullmatch(r'^\d+m$', guest)) and (not name == guest), guests)
+                notification_user_name = list(filtered)[-1]
                 print(guests)
+
             
             discord_client = DiscordClient(discord_secret, discord_channel_id)
             embeds = [{
                 "title": "Gatherに集まる",
-                "description": "〇〇さんが居るみたい！Gatherに入って会いに行こう！",
+                "description": f"{notification_user_name}さんが居るみたい！Gatherに入って会いに行こう！",
                 "color": 0x00ff00,
                 "url": url,
                 "image": {
