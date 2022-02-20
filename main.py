@@ -63,13 +63,22 @@ def cmd(url, password, discord_secret, discord_channel_id, name):
             members_el = members_text_el.find_element_by_xpath('../..')
             guests_el = guests_text_el.find_element_by_xpath('../..')
 
-            print(members_el)
-            print('------------------')
-            print(members_el.text)
-            print('------------------')
-            print(guests_el)
-            print('------------------')
-            print(guests_el.text)
+            if members_count == 1:
+                print(members_el)
+                print('------------------')
+                print(members_el.text)
+
+                members = members_el.text.split('\n')
+                print(members)
+
+
+            if guests_count == 1:            
+                print(guests_el)
+                print('------------------')
+                print(guests_el.text)
+
+                guests = guests_el.text.split('\n')
+                print(guests)
             
             discord_client = DiscordClient(discord_secret, discord_channel_id)
             embeds = [{
@@ -91,7 +100,6 @@ def cmd(url, password, discord_secret, discord_channel_id, name):
 
 
 def setup_display():
-    # print('skip')
     display = Display(visible=0, size=(800, 600))
     display.start()
 
