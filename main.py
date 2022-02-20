@@ -4,11 +4,15 @@ import click
 from get_chrome_driver import GetChromeDriver
 from pyvirtualdisplay import Display
 
+from discord.client import DiscordClient
+
 @click.command()
 @click.argument('url')
 @click.argument('password')
+@click.argument('discord_secret')
+@click.argument('discord_channel_id')
 @click.option('--name', help='login user name', default='gather observer')
-def cmd(url, password, name):
+def cmd(url, password, discord_secret, discord_channel_id, name):
     setup_display()
     driver = setup_driver()
     
@@ -19,45 +23,42 @@ def cmd(url, password, name):
     driver.execute_script('document.dispatchEvent(new Event("visibilitychange"));')
 
     driver.implicitly_wait(30)
-    # パスワード入力
-    driver.find_element(By.CSS_SELECTOR, 'input[type="password"]').send_keys(password)
-    driver.find_element(By.XPATH, '//button[text()="Submit"]').click()
-
-    # キャラメイク
-    driver.find_element(By.XPATH, '//button[text()="Next Step"]').click()
-
-    # 名前入力
-    driver.find_element(By.CSS_SELECTOR, 'input[placeholder="Enter your name"]').send_keys(name)
-    driver.find_element(By.XPATH, '//button[text()="Finish"]').click()
-
-    # Join
-    driver.find_element(By.XPATH, '//button[text()="Join the Gathering"]').click()
-
-    try:
-        # チュートリアル画面に飛ばされることがあるのでその時はスキップ
-        driver.find_element(By.XPATH, '//button[text()="Skip Tutorial"]').click()
-        print('tutorial skipped')
-    except:
-        print('no tutorial')
-        
+   
+    join_space()
+    
+    # 部屋に入った時の状態確認用にキャプチャを取得する
     driver.save_screenshot('screenshot.png')
 
-    members_text_el = driver.find_element(By.XPATH, '//span[contains(text(),"MEMBERS -")]')
-    guests_text_el = driver.find_element(By.XPATH, '//span[contains(text(),"GUESTS -")]')
-
+    members_text_el = driver.find_element(By.XPATH, '//span[contains(text(),"MEMBERS - ")]')
+    guests_text_el = driver.find_element(By.XPATH, '//span[contains(text(),"GUESTS - ")]')
+    
     print(members_text_el.text)
     print(guests_text_el.text)
+    
+    members_count = int(members_text_el.text.split('MEMBERS - ')[-1])
+    # Bot自身がカウントに入ってしまうので -1 する
+    guests_count = int(guests_text_el.text.split('GUESTS - ')[-1]) - 1
 
-    members_el = members_text_el.find_element_by_xpath('../..')
-    guests_el = guests_text_el.find_element_by_xpath('../..')
+    match (members_count, guests_count):
+        case (1, 0) | (0, 1):
+                discord_client = DiscordClient(discord_secret, discord_channel_id)
+                discord_client.send_message('test')
+        
+    
 
-    print(members_el)
-    print('------------------')
-    print(members_el.text)
-    print('------------------')
-    print(guests_el)
-    print('------------------')
-    print(guests_el.text)
+
+    # members_el = members_text_el.find_element_by_xpath('../..')
+    # guests_el = guests_text_el.find_element_by_xpath('../..')
+
+    # print(members_el)
+    # print('------------------')
+    # print(members_el.text)
+    # print('------------------')
+    # print(guests_el)
+    # print('------------------')
+    # print(guests_el.text)
+    
+
 
     # ブラウザーを終了
     driver.quit()
@@ -79,7 +80,6 @@ def setup_driver():
     get_driver.install()
 
     options = webdriver.ChromeOptions()
-    # options.binary_location = '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary'
     options.add_argument('--no-sandbox')
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
@@ -88,6 +88,29 @@ def setup_driver():
     # ブラウザーを起動
     driver = webdriver.Chrome(options=options)
     return driver
+
+def join_space():
+    # パスワード入力
+    driver.find_element(By.CSS_SELECTOR, 'input[type="password"]').send_keys(password)
+    driver.find_element(By.XPATH, '//button[text()="Submit"]').click()
+
+    # キャラメイク
+    driver.find_element(By.XPATH, '//button[text()="Next Step"]').click()
+
+    # 名前入力
+    driver.find_element(By.CSS_SELECTOR, 'input[placeholder="Enter your name"]').send_keys(name)
+    driver.find_element(By.XPATH, '//button[text()="Finish"]').click()
+
+    # Join
+    driver.find_element(By.XPATH, '//button[text()="Join the Gathering"]').click()
+
+    try:
+        # チュートリアル画面に飛ばされることがあるのでその時はスキップ
+        driver.find_element(By.XPATH, '//button[text()="Skip Tutorial"]').click()
+        print('tutorial skipped')
+    except:
+        print('no tutorial')
+        
 
 if __name__ == '__main__':
     cmd()
