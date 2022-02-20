@@ -19,3 +19,9 @@ jobs:
         pip install -r requirements.txt
     - name: Observe gather space
       run: python main.py ${{secrets.GATHER_SPACE_URL}} ${{secrets.GATHER_SPACE_PASSWORD}} --name ${{secrets.OBSERVER_USER_NAME}} 
+    - name: Save failure screenshot
+      uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: screenshot
+        path: ./screenshot.png
