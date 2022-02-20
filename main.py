@@ -74,7 +74,7 @@ def cmd(url, password, discord_secret, discord_channel_id, name):
             discord_client = DiscordClient(discord_secret, discord_channel_id)
             message = '〇〇さんが居るみたい！Gatherに入って会いに行こう！'
             embeds = [{
-                "title": messages,
+                "title": message,
                 "color": 0x00ff00,
                 "url": url
             }]
