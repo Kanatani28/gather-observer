@@ -81,7 +81,7 @@ def cmd(url, password, discord_secret, discord_channel_id, name):
                     "url": "https://user-images.githubusercontent.com/16130443/154839020-cbe6d843-f957-4013-81d9-7e62b74cadaa.png"
                 }
             }]
-            discord_client.send_message(embeds)
+            discord_client.send_message({ "embeds": embeds })
     
 
 
