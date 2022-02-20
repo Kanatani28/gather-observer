@@ -11,8 +11,12 @@ from pyvirtualdisplay import Display
 def cmd(url, password, name):
     setup_display()
     driver = setup_driver()
+    
     # 画面に遷移
     driver.get(url)
+    driver.execute_script("Object.defineProperty(document, 'visibilityState', {value: 'visible', writable: true});")
+    driver.execute_script("Object.defineProperty(document, 'hidden', {value: false, writable: true});")
+    driver.execute_script('document.dispatchEvent(new Event("visibilitychange"));')
 
     driver.implicitly_wait(30)
     # パスワード入力
@@ -35,6 +39,8 @@ def cmd(url, password, name):
         print('tutorial skipped')
     except:
         print('no tutorial')
+        
+    driver.save_screenshot('screenshot.png')
 
     members_text_el = driver.find_element(By.XPATH, '//span[contains(text(),"MEMBERS -")]')
     guests_text_el = driver.find_element(By.XPATH, '//span[contains(text(),"GUESTS -")]')
@@ -56,7 +62,15 @@ def cmd(url, password, name):
     # ブラウザーを終了
     driver.quit()
 
+    
+    
+    
+
+
+
+
 def setup_display():
+    # print('skip')
     display = Display(visible=0, size=(800, 600))
     display.start()
 
@@ -66,7 +80,11 @@ def setup_driver():
 
     options = webdriver.ChromeOptions()
     # options.binary_location = '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary'
-    # options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--lang=ja-JP')
+    options.add_argument(f'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.79 Safari/537.36') 
     # ブラウザーを起動
     driver = webdriver.Chrome(options=options)
     return driver
