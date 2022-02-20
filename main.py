@@ -60,32 +60,30 @@ def cmd(url, password, discord_secret, discord_channel_id, name):
 
     match (members_count, guests_count):
         case (1, 0) | (0, 1):
-                discord_client = DiscordClient(discord_secret, discord_channel_id)
-                discord_client.send_message('test')
-        
-    
+            members_el = members_text_el.find_element_by_xpath('../..')
+            guests_el = guests_text_el.find_element_by_xpath('../..')
 
-
-    # members_el = members_text_el.find_element_by_xpath('../..')
-    # guests_el = guests_text_el.find_element_by_xpath('../..')
-
-    # print(members_el)
-    # print('------------------')
-    # print(members_el.text)
-    # print('------------------')
-    # print(guests_el)
-    # print('------------------')
-    # print(guests_el.text)
+            print(members_el)
+            print('------------------')
+            print(members_el.text)
+            print('------------------')
+            print(guests_el)
+            print('------------------')
+            print(guests_el.text)
+            
+            discord_client = DiscordClient(discord_secret, discord_channel_id)
+            message = '〇〇さんが居るみたい！Gatherに入って会いに行こう！'
+            embeds = [{
+                "title": messages,
+                "color": 0x00ff00,
+                "url": url
+            }]
+            discord_client.send_message(embeds)
     
 
 
     # ブラウザーを終了
     driver.quit()
-
-    
-    
-    
-
 
 
 
