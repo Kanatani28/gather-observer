@@ -81,7 +81,7 @@ def cmd(url, password, discord_secret, discord_channel_id, name):
                 print('------------------')
                 print(guests_el.text)
 
-                notification_user_name = guests_el.find_element(By.CSS_SELECTOR, 'span[font-weight="700"][color="#ffffff"]').text
+                notification_user_name = guests_el.find_elements(By.CSS_SELECTOR, 'span[font-weight="700"][color="#ffffff"]')[1].text
                 print(notification_user_name)
             
             discord_client = DiscordClient(discord_secret, discord_channel_id)
