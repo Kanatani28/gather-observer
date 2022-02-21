@@ -73,25 +73,16 @@ def cmd(url, password, discord_secret, discord_channel_id, name):
                 print('------------------')
                 print(members_el.text)
 
-                
-                members = members_el.text.split('\n')
-                # minutesと CONST_MEMBERS 文字列 を削除する
-                filtered = filter(lambda member: (not CONST_MEMBERS in member) and (not re.fullmatch(r'^\d+m$', member)), members)
-                notification_user_name = list(filtered)[-1]
-                print(members)
-
+                notification_user_name = members_el.find_element(By.CSS_SELECTOR, 'span[font-weight="700"][color="#ffffff"]').text
+                print(notification_user_name)
 
             if guests_count == 1:            
                 print(guests_el)
                 print('------------------')
                 print(guests_el.text)
 
-                guests = guests_el.text.split('\n')
-                # minutesと CONST_GUESTS 文字列 と このBotのユーザー名 を削除する
-                filtered = filter(lambda guest: (not CONST_GUESTS in guest) and (not re.fullmatch(r'^\d+m$', guest)) and (not name == guest), guests)
-                notification_user_name = list(filtered)[-1]
-                print(guests)
-
+                notification_user_name = guests_el.find_element(By.CSS_SELECTOR, 'span[font-weight="700"][color="#ffffff"]').text
+                print(notification_user_name)
             
             discord_client = DiscordClient(discord_secret, discord_channel_id)
             embeds = [{
