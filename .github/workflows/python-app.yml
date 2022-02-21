@@ -1,6 +1,7 @@
 name: Gather observing
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '*/30 1-13 * * *'
 
