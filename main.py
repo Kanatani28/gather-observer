@@ -33,11 +33,11 @@ def cmd(url, password, discord_secret, discord_channel_id, name):
     driver.find_element(By.XPATH, '//button[text()="Submit"]').click()
 
     # キャラメイク
-    driver.find_element(By.XPATH, '//button[text()="Next Step"]').click()
+    # driver.find_element(By.XPATH, '//button[text()="Next Step"]').click()
 
     # 名前入力
     driver.find_element(By.CSS_SELECTOR, 'input[placeholder="Enter your name"]').send_keys(name)
-    driver.find_element(By.XPATH, '//button[text()="Finish"]').click()
+    # driver.find_element(By.XPATH, '//button[text()="Finish"]').click()
 
     # Join
     driver.find_element(By.XPATH, '//button[text()="Join the Gathering"]').click()
