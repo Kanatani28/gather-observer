@@ -48,6 +48,10 @@ def cmd(url, password, discord_secret, discord_channel_id, name):
         print('tutorial skipped')
     except:
         print('no tutorial')
+        
+    # パスワード入力
+    driver.find_element(By.CSS_SELECTOR, 'input[type="password"]').send_keys(password)
+    driver.find_element(By.XPATH, '//button[text()="Submit"]').click()
     
     # 部屋に入った時の状態確認用にキャプチャを取得する
     driver.save_screenshot('screenshot.png')
